@@ -1,0 +1,36 @@
+{% extends "base.html" %} <!-- 继承那个模板-->
+{% block content %}
+    <div class="page-header">
+      <h1>{{ table.name }} <small></small></h1>
+    </div>
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">{{ table.name }}</div>
+      <div class="panel-body">
+        <p>{{ table.desc }}</p>
+        <div class="btn-group" role="group" aria-label="...">
+          <a type="button" class="btn btn-default" href="/honsy/add/{{ table.name }}">新增</a>
+        </div>
+
+      </div>
+
+      <!-- Table -->
+      <table class="table">
+      <tr>
+      {% for col in table.cols %}
+          <th>{{ col }}</th>
+      {% endfor %}
+          <th>操作</th>
+      </tr>
+      {% for row in data %}
+          <tr>
+          {% for cell in row %}
+              <td>{{ cell }}</td>
+          {% endfor %}
+              <td>查看二维码</td>
+          </tr>
+      {% endfor %}
+      </table>
+    <div class="panel-footer"></div>
+    </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %} <!-- 继承那个模板-->
+{% block content %}
+
+    <div class="row">
+    {% for  table in tables %}
+      <div class="col-sm-6 col-md-4">
+        <div class="thumbnail">
+          <div class="caption honsy-block">
+            <h3>{{ table.name }}</h3>
+            <p>{{ table.desc }}</p>
+            <p><a href="/honsy/list/{{ table.name }}" class="btn btn-primary" role="button">进入</a></p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div> <!-- /row -->
+
+    </div> <!-- /container -->
+{% endblock %}
