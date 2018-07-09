@@ -24,10 +24,10 @@
       </tr>
       {% for row in data %}
           <tr>
-          {% for cell in row %}
+          {% for cell in row.value %}
               <td>{{ cell }}</td>
           {% endfor %}
-              <td>查看二维码</td>
+              <td><a href="/honsy/show_qrcode?msg=/honsy/detail/{{ table.name }}?ID={{ row.id }}">查看二维码</a></td>
           </tr>
       {% endfor %}
       </table>

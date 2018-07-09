@@ -37,7 +37,7 @@ class MetaDao(object):
             data_meta = MetaModel.objects.filter(table_name=name,type_name="data")
             data = []
             for x in data_meta:
-                data.append(x.row_value.split(SPLITTR))
+                data.append({"id": x.row_id, "value": x.row_value.split(SPLITTR)})
             return data
         except Exception, e:
             print e

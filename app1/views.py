@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from qrcode import make as make_qrcode
+import json
 
 from django.shortcuts import render, HttpResponseRedirect
+from django.http import FileResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django import forms
@@ -47,27 +50,41 @@ def user_logout(request):
 @login_required
 def honsy(request):
     tables = MetaDao.list_tables()
-    context = {'tables': tables }
+    context = {'tables': tables, 'user': request.COOKIES.get('name')}
     return render(request, "honsy.html", context=context)
 
 @login_required
 def list(request, name):
     table = MetaDao.get_table(name)
     data = MetaDao.get_table_data(name)
-    context = {'table': table,  'data': data }
+    context = {'table': table,  'data': data, 'user': request.COOKIES.get('name')}
     return render(request, "list.html", context=context)
 
 @login_required
 def edit(request, path):
     tables = MetaDao.list_tables()
-    context = {'tables': tables }
+    context = {'tables': tables, 'user': request.COOKIES.get('name')}
     return render(request, "edit.html", context=context)
+
+@login_required
+def show_qrcode(request):
+    msg = request.GET.get("msg")
+    context = {'msg': msg, 'user': request.COOKIES.get('name')}
+    return render(request, "show_qrcode.html", context=context)
+
+@login_required
+def get_qrcode(request):
+    msg = request.GET.get("msg")
+    # 这个二维码信息，可以转换为文件流，不用保存为文件再读取。这个是临时做法。
+    qr_img = make_qrcode(msg)
+    qr_img.save("./test.png")
+    return FileResponse(open(r"./test.png", "rb"), content_type="image/png")
 
 @login_required
 def add(request, name):
     if request.method == "GET":
         table = MetaDao.get_table(name)
-        context = {'table': table}
+        context = {'table': table, 'user': request.COOKIES.get('name')}
         return render(request, "add.html", context=context)
     else:
         table = MetaDao.get_table(name)
