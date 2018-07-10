@@ -1,4 +1,5 @@
 {
   "app_name": "Honsy",
-  "app_url": "honsy"
+  "app_url": "honsy",
+  "server_domain_name": "honsy"
 }

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from qrcode import make as make_qrcode
+from qrcode import make as make_qrcode, QRCode
 import json
 
 from django.shortcuts import render, HttpResponseRedirect
-from django.http import FileResponse
+from django.http import FileResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django import forms
@@ -87,6 +87,18 @@ def show_qrcode(request):
         'msg': msg,
         'user': request.COOKIES.get('name')}
     return render(request, "show_qrcode.html", context=context)
+
+@login_required
+def scan_qrcode(request):
+    context = {
+        'app': app_config,
+        'user': request.COOKIES.get('name')}
+    return render(request, "scan_qrcode.html", context=context)
+
+@login_required
+def decode_qrcode(request):
+
+    return JsonResponse({"status":"ok", "data":"123456"})
 
 @login_required
 def get_qrcode(request):
