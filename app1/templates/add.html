@@ -9,11 +9,11 @@
       <div class="panel-body">
         <p>{{ table.desc }}</p>
         <div class="btn-group" role="group" aria-label="...">
-          <a type="button" class="btn btn-default" href="/honsy/list/{{ table.name }}">取消</a>
+          <a type="button" class="btn btn-default" href="/{{ app.app_url }}/list/{{ table.name }}">取消</a>
         </div>
 
       </div>
-      <form method="post" action="/honsy/add/{{ table.name }}">
+      <form method="post" action="/{{ app.app_url }}/add/{{ table.name }}">
       {% csrf_token %}
       <!-- Table -->
       <table class="table">

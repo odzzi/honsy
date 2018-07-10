@@ -12,6 +12,8 @@ from meta_dao import MetaDao
 # Create your views here.
 
 
+app_config = json.load(open(r"./conf/app.json"))
+
 def user_login(request):
     class LoginForm(forms.Form):
         username = forms.CharField()
@@ -38,7 +40,7 @@ def user_login(request):
                 return response
                 # return render(request,'feedback.html')
                 # 这里直接写模版渲染，就不能设置cookie的过期时间了
-    return render(request, 'login.html')
+    return render(request, 'login.html', context={'app': app_config})
 
 
 def user_logout(request):
@@ -48,28 +50,42 @@ def user_logout(request):
     return response
 
 @login_required
-def honsy(request):
+def index(request):
     tables = MetaDao.list_tables()
-    context = {'tables': tables, 'user': request.COOKIES.get('name')}
+    context = {
+        'app': app_config,
+        'tables': tables,
+        'user': request.COOKIES.get('name')}
     return render(request, "honsy.html", context=context)
 
 @login_required
 def list(request, name):
     table = MetaDao.get_table(name)
     data = MetaDao.get_table_data(name)
-    context = {'table': table,  'data': data, 'user': request.COOKIES.get('name')}
+    context = {
+        'app': app_config,
+        'table': table,
+        'data': data,
+        'user': request.COOKIES.get('name')}
+
     return render(request, "list.html", context=context)
 
 @login_required
 def edit(request, path):
     tables = MetaDao.list_tables()
-    context = {'tables': tables, 'user': request.COOKIES.get('name')}
+    context = {
+        'app': app_config,
+        'tables': tables,
+        'user': request.COOKIES.get('name')}
     return render(request, "edit.html", context=context)
 
 @login_required
 def show_qrcode(request):
     msg = request.GET.get("msg")
-    context = {'msg': msg, 'user': request.COOKIES.get('name')}
+    context = {
+        'app': app_config,
+        'msg': msg,
+        'user': request.COOKIES.get('name')}
     return render(request, "show_qrcode.html", context=context)
 
 @login_required
@@ -84,7 +100,10 @@ def get_qrcode(request):
 def add(request, name):
     if request.method == "GET":
         table = MetaDao.get_table(name)
-        context = {'table': table, 'user': request.COOKIES.get('name')}
+        context = {
+            'app': app_config,
+            'table': table,
+            'user': request.COOKIES.get('name')}
         return render(request, "add.html", context=context)
     else:
         table = MetaDao.get_table(name)
@@ -92,4 +111,4 @@ def add(request, name):
         for col in table.get("cols", []):
             cols.append(request.POST.get(col))
         MetaDao.add_table_row(name, cols)
-        return  HttpResponseRedirect("/honsy/list/%s"%name)
+        return  HttpResponseRedirect("/%s/list/%s"%(app_config.get("app_url"), name))

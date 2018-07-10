@@ -9,7 +9,7 @@
       <div class="panel-body">
         <p>{{ table.desc }}</p>
         <div class="btn-group" role="group" aria-label="...">
-          <a type="button" class="btn btn-default" href="/honsy/add/{{ table.name }}">新增</a>
+          <a type="button" class="btn btn-default" href="/{{ app.app_url }}/add/{{ table.name }}">新增</a>
         </div>
 
       </div>
@@ -27,7 +27,7 @@
           {% for cell in row.value %}
               <td>{{ cell }}</td>
           {% endfor %}
-              <td><a href="/honsy/show_qrcode?msg=/honsy/detail/{{ table.name }}?ID={{ row.id }}">查看二维码</a></td>
+              <td><a href="/{{ app.app_url }}/show_qrcode?msg=/{{ app.app_url }}/detail/{{ table.name }}?ID={{ row.id }}">查看二维码</a></td>
           </tr>
       {% endfor %}
       </table>
