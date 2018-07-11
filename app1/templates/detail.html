@@ -1,0 +1,31 @@
+{% extends "base.html" %} <!-- 继承那个模板-->
+{% block content %}
+   <div class="page-header">
+      <h1>{{ table.name }} <small></small></h1>
+    </div>
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">{{ table.name }}</div>
+      <div class="panel-body">
+        <p>{{ table.desc }}</p>
+        <div class="btn-group" role="group" aria-label="...">
+          <a type="button" class="btn btn-default" href="/{{ app.app_url }}/list/{{ table.name }}">返回列表</a>
+        </div>
+
+      </div>
+      <!-- Table -->
+      <table class="table">
+      <tr>
+          <th>名字</th>
+          <th>值</th>
+      </tr>
+      {% for k,v in key_values %}
+          <tr>
+              <td>{{ k }}</td>
+              <td>{{ v }}</td>
+          </tr>
+      {% endfor %}
+
+      </table>
+    </div>
+{% endblock %}
