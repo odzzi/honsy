@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 from qrcode import make as make_qrcode, QRCode
 import json
+from base64 import decodestring as b64decode
+from subprocess import Popen, PIPE
 
 from django.shortcuts import render, HttpResponseRedirect
 from django.http import FileResponse, JsonResponse
@@ -9,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django import forms
 from meta_dao import MetaDao
+
 # Create your views here.
 
 
@@ -97,9 +100,17 @@ def scan_qrcode(request):
 
 @login_required
 def decode_qrcode(request):
-
-    return JsonResponse({"status":"ok", "data":"123456"})
-
+    img_data = request.POST.get("img")
+    if img_data:
+        temp_qrcode_filename = "qr_code.jpg"
+        open(temp_qrcode_filename, "wb").write(b64decode(img_data))
+        cmd = [r".\zbar\zbarimg.exe", temp_qrcode_filename]
+        proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        out, err = proc.communicate()
+        print out
+        if out:
+            return JsonResponse({"status": "ok", "data": out[len("QR-Code:"):]})
+    return JsonResponse({"status": "failed", "data": ""})
 @login_required
 def get_qrcode(request):
     msg = request.GET.get("msg")
@@ -124,3 +135,17 @@ def add(request, name):
             cols.append(request.POST.get(col))
         MetaDao.add_table_row(name, cols)
         return  HttpResponseRedirect("/%s/list/%s"%(app_config.get("app_url"), name))
+
+@login_required
+def detail(request, name):
+    if request.method == "GET":
+        table = MetaDao.get_table(name)
+        ID = request.GET.get("ID", "")
+        data = MetaDao.get_table_row(name, ID)
+        key_values= zip(table["cols"], data[0]["value"])
+        context = {
+            'app': app_config,
+            'table': table,
+            'key_values': key_values,
+            'user': request.COOKIES.get('name')}
+        return render(request, "detail.html", context=context)

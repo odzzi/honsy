@@ -35,10 +35,15 @@
 
         setInterval(function () {
             context.drawImage(video, 0, 0, canvas.width = video.videoWidth, canvas.height = video.videoHeight);
-            $.post('/{{ app.app_url }}/decode_qrcode', { "img": canvas.toDataURL().substr(22), "csrfmiddlewaretoken":$("[name='csrfmiddlewaretoken']").val() }, function (data, status) {
-                if (status == "success" && data != "no")location.href = "/{{ app.app_url }}/show_decode_qrcode_result?data=" + data;
-            }, "text");
-        }, 500);
+            $.post('/{{ app.app_url }}/decode_qrcode',
+                { "img": canvas.toDataURL().substr(22),
+                    "csrfmiddlewaretoken":$("[name='csrfmiddlewaretoken']").val() },
+                function (data, status) {
+                if (status == "success" && data.status == "ok"){
+                    location.href = data.data;
+                }
+            }, "json");
+        }, 5000);
 
 
     }, false);

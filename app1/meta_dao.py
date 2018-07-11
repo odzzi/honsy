@@ -44,6 +44,19 @@ class MetaDao(object):
             return []
 
     @staticmethod
+    def get_table_row(name, ID):
+        try:
+            # get table meta from meta.
+            data_meta = MetaModel.objects.filter(table_name=name, type_name="data", row_id=ID)
+            data = []
+            for x in data_meta:
+                data.append({"id": x.row_id, "value": x.row_value.split(SPLITTR)})
+            return data
+        except Exception, e:
+            print e
+            return []
+
+    @staticmethod
     def add_table_row(name, col_values):
         try:
             # get table meta from meta.
