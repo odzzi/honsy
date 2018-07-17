@@ -110,6 +110,17 @@ def decode_qrcode(request):
         print out
         if out:
             return JsonResponse({"status": "ok", "data": out[len("QR-Code:"):]})
+    elif "upload" in request.FILES:
+        img = request.FILES["upload"]
+        temp_qrcode_filename = "qr_code.jpg"
+        open(temp_qrcode_filename, "wb").write(img.read())
+        cmd = [r".\zbar\zbarimg.exe", temp_qrcode_filename]
+        proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        out, err = proc.communicate()
+        print out
+        if out:
+            return JsonResponse({"status": "ok", "data": out[len("QR-Code:"):]})
+
     return JsonResponse({"status": "failed", "data": ""})
 @login_required
 def get_qrcode(request):

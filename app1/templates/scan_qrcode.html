@@ -3,8 +3,28 @@
 
 <style>#video {display: block;margin:1em auto;width:80%;height:80%;}</style>
 <video id="video" autoplay></video>
-{% csrf_token %}
+<form action="/{{ app.app_url }}/decode_qrcode" method="post" id="test_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input id="upload" name="upload" accept="image/*,audio/*" type="file" onfocus="this.blur()"/>
+</form>
 <script>
+
+    var upload = document.getElementById('upload');
+    upload.addEventListener('change', function() {
+        var form = document.getElementById('test_form');
+        form.submit();
+{#      var file = upload.files[0];#}
+{#      var form = new FormData();#}
+{#      form.append("file", file)#}
+{#      $.post('/{{ app.app_url }}/decode_qrcode',#}
+{#                { "img": file.size,#}
+{#                    "csrfmiddlewaretoken":$("[name='csrfmiddlewaretoken']").val() },#}
+{#                function (data, status) {#}
+{#                if (status == "success" && data.status == "ok"){#}
+{#                    location.href = data.data;#}
+{#                }#}
+{#            }, "json");#}
+    }, false);
     window.addEventListener("DOMContentLoaded", function () {
         var video = document.getElementById("video"), canvas, context;
         try {
@@ -14,7 +34,7 @@
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
 
-        if (navigator.getUserMedia)
+        if (navigator.getUserMedia){
             navigator.getUserMedia(
                 { "video": true },
                 function (stream) {
@@ -29,23 +49,21 @@
                     alert("Video capture error: " + error.code);
                 }
             );
-        else alert("Native device media streaming (getUserMedia) not supported in this browser");
-
-
-
-        setInterval(function () {
-            context.drawImage(video, 0, 0, canvas.width = video.videoWidth, canvas.height = video.videoHeight);
-            $.post('/{{ app.app_url }}/decode_qrcode',
-                { "img": canvas.toDataURL().substr(22),
-                    "csrfmiddlewaretoken":$("[name='csrfmiddlewaretoken']").val() },
-                function (data, status) {
-                if (status == "success" && data.status == "ok"){
-                    location.href = data.data;
-                }
-            }, "json");
-        }, {{ app.scan_code_interval }});
-
-
+            setInterval(function () {
+                context.drawImage(video, 0, 0, canvas.width = video.videoWidth, canvas.height = video.videoHeight);
+                $.post('/{{ app.app_url }}/decode_qrcode',
+                    { "img": canvas.toDataURL().substr(22),
+                        "csrfmiddlewaretoken":$("[name='csrfmiddlewaretoken']").val() },
+                    function (data, status) {
+                    if (status == "success" && data.status == "ok"){
+                        location.href = data.data;
+                    }
+                }, "json");
+            }, {{ app.scan_code_interval }});
+        }
+        else {
+            alert("Native device media streaming (getUserMedia) not supported in this browser");
+        }
     }, false);
 
  </script>
