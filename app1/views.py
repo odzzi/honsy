@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from qrcode import make as make_qrcode, QRCode
+from qrcode import make as make_qrcode
 import json
 from base64 import decodestring as b64decode
 from subprocess import Popen, PIPE
@@ -119,7 +119,9 @@ def decode_qrcode(request):
         out, err = proc.communicate()
         print out
         if out:
-            return JsonResponse({"status": "ok", "data": out[len("QR-Code:"):]})
+            return HttpResponseRedirect(out[len("QR-Code:"):].strip())
+        else:
+            return HttpResponseRedirect("/%s/scan_qrcode"%(app_config.get("app_url")))
 
     return JsonResponse({"status": "failed", "data": ""})
 @login_required
