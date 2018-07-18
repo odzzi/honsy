@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from qrcode import make as make_qrcode
 import json
 from base64 import decodestring as b64decode
 from subprocess import Popen, PIPE
+
+from qrcode import make as make_qrcode
+from PIL import Image
 
 from django.shortcuts import render, HttpResponseRedirect
 from django.http import FileResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django import forms
+
 from meta_dao import MetaDao
 
 # Create your views here.
@@ -114,6 +117,9 @@ def decode_qrcode(request):
         img = request.FILES["upload"]
         temp_qrcode_filename = "qr_code.jpg"
         open(temp_qrcode_filename, "wb").write(img.read())
+        img = Image.open(temp_qrcode_filename)
+        new_img = img.resize((400, 400), Image.ANTIALIAS)
+        new_img.save(temp_qrcode_filename)
         cmd = [r".\zbar\zbarimg.exe", temp_qrcode_filename]
         proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
         out, err = proc.communicate()
