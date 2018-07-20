@@ -61,7 +61,7 @@ def index(request):
     context = {
         'app': app_config,
         'tables': tables,
-        'user': request.COOKIES.get('name')}
+        'user': request.user}
     return render(request, "honsy.html", context=context)
 
 @login_required
@@ -72,7 +72,7 @@ def list(request, name):
         'app': app_config,
         'table': table,
         'data': data,
-        'user': request.COOKIES.get('name')}
+        'user': request.user}
 
     return render(request, "list.html", context=context)
 
@@ -82,7 +82,7 @@ def edit(request, path):
     context = {
         'app': app_config,
         'tables': tables,
-        'user': request.COOKIES.get('name')}
+        'user': request.user}
     return render(request, "edit.html", context=context)
 
 @login_required
@@ -91,14 +91,14 @@ def show_qrcode(request):
     context = {
         'app': app_config,
         'msg': msg,
-        'user': request.COOKIES.get('name')}
+        'user': request.user}
     return render(request, "show_qrcode.html", context=context)
 
 @login_required
 def scan_qrcode(request):
     context = {
         'app': app_config,
-        'user': request.COOKIES.get('name')}
+        'user': request.user}
     return render(request, "scan_qrcode.html", context=context)
 
 @login_required
@@ -130,6 +130,7 @@ def decode_qrcode(request):
             return HttpResponseRedirect("/%s/scan_qrcode"%(app_config.get("app_url")))
 
     return JsonResponse({"status": "failed", "data": ""})
+
 @login_required
 def get_qrcode(request):
     msg = request.GET.get("msg")
@@ -145,7 +146,7 @@ def add(request, name):
         context = {
             'app': app_config,
             'table': table,
-            'user': request.COOKIES.get('name')}
+            'user': request.user}
         return render(request, "add.html", context=context)
     else:
         table = MetaDao.get_table(name)
@@ -166,5 +167,5 @@ def detail(request, name):
             'app': app_config,
             'table': table,
             'key_values': key_values,
-            'user': request.COOKIES.get('name')}
+            'user': request.user}
         return render(request, "detail.html", context=context)
