@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'edit/([a-zA-Z\w\d\-\_]+)', views.edit),
     url(r'detail/([a-zA-Z\w\d\-\_]+)', views.detail),
     url(r'add/([a-zA-Z\w\d\-\_]+)', views.add),
+    url(r'task/([a-zA-Z\w\d\-\_]+)', views.task),
     url(r"show_qrcode", views.show_qrcode),
     url(r"get_qrcode", views.get_qrcode),
     url(r"scan_qrcode", views.scan_qrcode),

@@ -156,6 +156,17 @@ def add(request, name):
         MetaDao.add_table_row(name, cols)
         return  HttpResponseRedirect("/%s/list/%s"%(app_config.get("app_url"), name))
 
+
+@login_required
+def task(request, name):
+    if request.method == "GET":
+        table = MetaDao.get_table(name)
+        context = {
+            'app': app_config,
+            'table': table,
+            'user': request.user}
+        return render(request, "task.html", context=context)
+
 @login_required
 def detail(request, name):
     if request.method == "GET":

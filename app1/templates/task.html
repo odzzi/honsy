@@ -1,0 +1,59 @@
+{% extends "base.html" %} <!-- 继承那个模板-->
+{% block content %}
+   <div class="page-header">
+      <h1>{{ table.name }} <small></small></h1>
+    </div>
+    <div class="panel panel-default">
+      <!-- Default panel contents -->
+      <div class="panel-heading">{{ table.name }}</div>
+      <div class="panel-body">
+        <p>{{ table.desc }}</p>
+        <div class="btn-group" role="group" aria-label="...">
+          <a type="button" class="btn btn-default" href="/{{ app.app_url }}/list/{{ table.name }}">取消</a>
+        </div>
+
+      </div>
+      <form method="post" action="/{{ app.app_url }}/add/{{ table.name }}">
+      {% csrf_token %}
+      <!-- Table -->
+          <div class="panel-group" id="accordion">
+            {% for task in table.tasks %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion"
+                        href="#{{ task.name }}">
+                        {{ task.name }} - {{ task.operater }}
+                        </a>
+                    </h4>
+                </div>
+                <div id="{{ task.name }}" class="panel-collapse collapse ">
+                  <form method="post" action="/{{ app.app_url }}/add/{{ table.name }}">
+                    {% csrf_token %}
+                    <div class="panel-body">
+                      <!-- Table -->
+                      <table class="table">
+                      <tr>
+                          <th>名字</th>
+                          <th>输入</th>
+                      </tr>
+                      {% for col in task.questions %}
+                          <tr>
+                              <th>{{ col }}</th>
+                              <th><input class="form-control" type="text" id="{{ col }}" name="{{ col }}"/></th>
+                          </tr>
+                      {% endfor %}
+
+                      </table>
+                    </div>
+                      <div class="panel-footer">
+                      <button type="submit" class="btn btn-default">保存</button>
+                    </div>
+                  </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock %}
